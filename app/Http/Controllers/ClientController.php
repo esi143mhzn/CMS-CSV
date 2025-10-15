@@ -24,6 +24,10 @@ class ClientController extends Controller
         
         $header = fgetcsv($file);
         $expectedHeaders = ['company_name', 'email', 'phone_number'];
+
+        if (isset($header[0])) {
+            $header[0] = preg_replace('/^\xEF\xBB\xBF/', '', $header[0]);
+        }
             
         if($header !== $expectedHeaders) {
             return back()->with('error', 'Invalid CSV header format.');
