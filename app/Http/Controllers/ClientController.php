@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use DB;
+use App\Models\Client;
 
 class ClientController extends Controller
 {
@@ -33,9 +33,15 @@ class ClientController extends Controller
             return back()->with('error', 'Invalid CSV header format.');
         }
 
+        // Load all existing client keys from DB
+        $exisitingKeys = Client::all()->map(function($client) {
+            return $client->company_name . '|' . $client->email . '|' . $client->phone_number;
+        })->toArray();
+
         $errors = [];
         $batchData = [];
         $rowNumber = 1;
+        $duplicates = [];
 
         while(($row = fgetcsv($file)) !== false) {
             $rowNumber++;
@@ -44,7 +50,7 @@ class ClientController extends Controller
 
             $validator = Validator::make($data, [
                 'company_name' => 'required|string|max:255',
-                'email' => 'required|email|unique:clients,email',
+                'email' => 'required|email',
                 'phone_number' => 'nullable|string|max:20',
             ]);
 
@@ -53,32 +59,103 @@ class ClientController extends Controller
                 continue;
             }
 
+            //check duplicate with DB
+            $key = $data['company_name'] . '|' . $data['email'] . '|' . $data['phone_number'];
+            $isDuplicate = in_array($key, $exisitingKeys);
+            if($isDuplicate) {
+                $duplicates[$rowNumber] = 'Duplicate records detect and imported with flag.';
+            }
+
             $batchData[] = [
                 'company_name' => $data['company_name'],
                 'email' => $data['email'],
                 'phone_number' => $data['phone_number'],
+                'is_duplicate' => $isDuplicate,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
 
             //Batch insert every 500 records
             if(count($batchData) === 500) {
-                DB::table('clients')->insert($batchData);
+                Client::insert($batchData);
                 $batchData = [];
             }
         }
 
         // Insert remaning records
         if(!empty($batchData)) {
-            DB::table('clients')->insert($batchData);
+            Client::insert($batchData);
         }
 
         fclose($file);
 
         if(!empty($errors)) {
-            return back()->with('error', 'Some rows failed to import.')->with('import_errors', $errors);
+            return back()->with([
+                'error' => 'Some rows failed to import.',
+                'import_errors' => $errors,
+                'duplicates' => $duplicates,
+            ]);
         }
 
-        return back()->with('success', 'CSV imported successfully.'); 
+        return back()->with([
+            'success' => 'CSV imported successfully.',
+        ]); 
+    }
+
+    public function duplicateClients() 
+    {
+        $duplicateClients = Client::where('is_duplicate', 1)->paginate(25);
+
+        return view('clients.duplicate_records', compact('duplicateClients'));
+    }
+
+    public function updateDuplicateClient(Request $request, $id) 
+    {
+        $validator = Validator::make($request->all(), [
+            'company_name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'phone_number' => 'required|string|max:20',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $data = $request->only(['company_name', 'email', 'phone_number']);
+
+        $existingRecord = Client::find($id);
+
+        if (!$existingRecord) {
+            return back()->with('error', 'Client not found!');
+        }
+
+        $change = [];
+        foreach($data as $key => $value) {
+            if($value != $existingRecord->$key) {
+                $change[$key] = [
+                    'old' => $existingRecord->$key,
+                    'new' => $value,
+                ];
+            }
+        }
+
+        if (!empty($change)) {
+            $existingRecord->is_duplicate = 0;
+        }
+
+        $existingRecord->fill($data);
+        $existingRecord->save();
+
+        return redirect()->back()->with([
+            'success' => 'Client updated successfully!',
+            'change' => $change,
+        ]);
+    }
+
+    public function deleteDuplicateClient($id) 
+    {
+        Client::findOrFail($id)->delete();
+
+        return redirect()->back()->with('success', 'Duplicate client deleted successfuly.');
     }
 }

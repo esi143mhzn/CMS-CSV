@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clients', function (Blueprint $table) {
-            $table->id();
-            $table->string('company_name');
-            $table->string('email');
-            $table->string('phone_number');
-            $table->timestamps();
+        Schema::table('clients', function (Blueprint $table) {
+            $table->boolean('is_duplicate')->default(false)->after('phone_number');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clients');
+        Schema::table('clients', function (Blueprint $table) {
+            $table->dropColumn('is_duplicate');
+        });
     }
 };
