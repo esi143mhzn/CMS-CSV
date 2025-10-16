@@ -14,9 +14,16 @@
 
     <div class="container">
         <h2 class="mb-4">List of Clients Report</h2>
-        <div class="buttons mb-2">
-            <a href="{{ route('clients.export.csv') }}" class="btn btn-info">CSV Export</a>
-            <button class="btn btn-warning">Filter</button>
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+            <a href="{{ route('clients.export.csv', ['filter' => request('filter', 'all')]) }}" class="btn btn-secondary">CSV Export</a>
+            <form action="{{ route('list.clients') }}" method="GET" class="d-flex align-items-center gap-2">
+                <select name="filter" class="form-select" style="width: 180px;">
+                    <option value="all" {{ request('filter') == 'all' ? 'selected' : '' }}>All</option>
+                    <option value="duplicates" {{ request('filter') == 'duplicates' ? 'selected' : '' }}>Duplicate</option>
+                    <option value="unique" {{ request('filter') == 'unique' ? 'selected' : '' }}>Unique</option>
+                </select>
+                <button type="submit" class="btn btn-warning">Filter</button>
+            </form>
         </div>
 
         <table class="table table-striped">

@@ -8,9 +8,18 @@ use App\Models\Client;
 
 class ClientController extends Controller
 {
-    public function listClients() 
+    public function listClients(Request $request) 
     {
-        $clients = Client::paginate(25);
+        $filter = $request->query('filter', 'all');
+        $mainQuery = Client::query();
+
+        if($filter === 'duplicates') {
+            $mainQuery->where('is_duplicate', 1);
+        } else if ($filter === 'unique') {
+            $mainQuery->where('is_duplicate', 0);
+        }
+
+        $clients = $mainQuery->paginate(25);
 
         return view('clients.clients_list', compact('clients'));
     }
@@ -167,9 +176,18 @@ class ClientController extends Controller
     }
 
     
-    public function exportCSV()
+    public function exportCSV(Request $request)
     {
-        $clients = Client::all();
+        $filter = $request->query('filter', 'all');
+        $mainQuery = Client::query();
+
+        if($filter === 'duplicates') {
+            $mainQuery->where('is_duplicate', 1);
+        } else if ($filter === 'unique') {
+            $mainQuery->where('is_duplicate', 0);
+        }
+
+        $clients = $mainQuery->get();
 
         $filename = 'clients_export_' . date('Ymd_His') . '.csv';
         $handle = fopen($filename, 'w+');
