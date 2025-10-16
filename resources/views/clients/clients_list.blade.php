@@ -24,6 +24,7 @@
                 </select>
                 <button type="submit" class="btn btn-warning">Filter</button>
             </form>
+            <a href="{{ route('list.clients') }}" class="btn btn-primary">Reset</a>
         </div>
 
         <table class="table table-striped">
@@ -48,7 +49,7 @@
         </table>
 
         <div class="pagination">
-            {!! $clients->links('pagination::bootstrap-5') !!}
+            {!! $clients->appends(request()->query())->links('pagination::bootstrap-5') !!}
         </div>
     </div>
 
