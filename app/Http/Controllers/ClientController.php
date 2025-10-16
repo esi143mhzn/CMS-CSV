@@ -8,6 +8,13 @@ use App\Models\Client;
 
 class ClientController extends Controller
 {
+    public function listClients() 
+    {
+        $clients = Client::paginate(25);
+
+        return view('clients.clients_list', compact('clients'));
+    }
+
     public function showImportForm() 
     {
         return view('clients.import_form');
@@ -157,5 +164,29 @@ class ClientController extends Controller
         Client::findOrFail($id)->delete();
 
         return redirect()->back()->with('success', 'Duplicate client deleted successfuly.');
+    }
+
+    
+    public function exportCSV()
+    {
+        $clients = Client::all();
+
+        $filename = 'clients_export_' . date('Ymd_His') . '.csv';
+        $handle = fopen($filename, 'w+');
+        fputcsv($handle, ['S.N.', 'Company Name', 'Email', 'Phone Number']);
+
+        foreach($clients as $key => $client)
+        {
+            fputcsv($handle, [
+                $key+1,
+                $client->company_name,
+                $client->email,
+                $client->phone_number
+            ]);
+        }
+
+        fclose($handle);
+
+        return response()->download($filename)->deleteFileAfterSend(true);
     }
 }
