@@ -187,21 +187,23 @@ class ClientController extends Controller
             $mainQuery->where('is_duplicate', 0);
         }
 
-        $clients = $mainQuery->get();
-
+        
         $filename = 'clients_export_' . date('Ymd_His') . '.csv';
         $handle = fopen($filename, 'w+');
         fputcsv($handle, ['S.N.', 'Company Name', 'Email', 'Phone Number']);
-
-        foreach($clients as $key => $client)
-        {
-            fputcsv($handle, [
-                $key+1,
-                $client->company_name,
-                $client->email,
-                $client->phone_number
-            ]);
-        }
+        
+        $counter = 1;
+        $mainQuery->chunk(1000, function ($clients) use (&$counter, $handle) {
+            foreach($clients as $client)
+            {
+                fputcsv($handle, [
+                    $counter++,
+                    $client->company_name,
+                    $client->email,
+                    $client->phone_number
+                ]);
+            }
+        });
 
         fclose($handle);
 
