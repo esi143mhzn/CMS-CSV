@@ -11,15 +11,9 @@ class ClientController extends Controller
     public function listClients(Request $request) 
     {
         $filter = $request->query('filter', 'all');
-        $mainQuery = Client::query();
+        $mainQuery = $this->getFilteredClients($filter, true);
 
-        if($filter === 'duplicates') {
-            $mainQuery->where('is_duplicate', 1);
-        } else if ($filter === 'unique') {
-            $mainQuery->where('is_duplicate', 0);
-        }
-
-        $clients = $mainQuery->paginate(25);
+        $clients = $mainQuery;
 
         return view('clients.clients_list', compact('clients'));
     }
@@ -179,15 +173,8 @@ class ClientController extends Controller
     public function exportCSV(Request $request)
     {
         $filter = $request->query('filter', 'all');
-        $mainQuery = Client::query();
+        $mainQuery = $this->getFilteredClients($filter, false);
 
-        if($filter === 'duplicates') {
-            $mainQuery->where('is_duplicate', 1);
-        } else if ($filter === 'unique') {
-            $mainQuery->where('is_duplicate', 0);
-        }
-
-        
         $filename = 'clients_export_' . date('Ymd_His') . '.csv';
         $handle = fopen($filename, 'w+');
         fputcsv($handle, ['S.N.', 'Company Name', 'Email', 'Phone Number']);
@@ -208,5 +195,18 @@ class ClientController extends Controller
         fclose($handle);
 
         return response()->download($filename)->deleteFileAfterSend(true);
+    }
+
+    private function getFilteredClients($filter, $paginate = false)
+    {
+        $filterQuery = Client::query();
+
+        if($filter === 'duplicates') {
+            $filterQuery->where('is_duplicate', 1);
+        } else if ($filter === 'unique') {
+            $filterQuery->where('is_duplicate', 0);
+        }
+
+        return $paginate ? $filterQuery->paginate(25) : $filterQuery;
     }
 }
