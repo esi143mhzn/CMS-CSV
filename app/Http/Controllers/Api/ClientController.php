@@ -110,7 +110,7 @@ class ClientController extends Controller
     {
         $duplicateClients = Client::where('is_duplicate', 1)->paginate(25);
 
-        return view('clients.duplicate_records', compact('duplicateClients'));
+        return response()->json($duplicateClients);
     }
 
     public function updateDuplicateClient(Request $request, $id) 
