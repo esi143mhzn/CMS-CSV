@@ -15,6 +15,10 @@
     <div class="container">
         <h2 class="mb-4">List of Duplicate Clients</h2>
 
+        <div class="mb-3">
+            <a href="{{ route('list.clients') }}" class="btn btn-secondary">Back to Clients</a>
+        </div>
+
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
@@ -50,9 +54,9 @@
         @endif
 
         <table class="table table-striped">
-            <thead>
+            <thead class="table-dark">
                 <tr>
-                    <th>ID</th>
+                    <th>S.N.</th>
                     <th>Company Name</th>
                     <th>Email</th>
                     <th>Phone Number</th>

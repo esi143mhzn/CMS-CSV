@@ -157,7 +157,7 @@ class ClientController extends Controller
         $existingRecord->save();
 
         return redirect()->back()->with([
-            'success' => 'Client updated successfully!',
+            'success' => 'Duplicate Client updated and moved to client list successfully!',
             'change' => $change,
         ]);
     }
@@ -199,7 +199,7 @@ class ClientController extends Controller
 
     private function getFilteredClients($filter, $paginate = false)
     {
-        $filterQuery = Client::query();
+        $filterQuery = Client::query()->orderBy('updated_at', 'desc');
 
         if($filter === 'duplicates') {
             $filterQuery->where('is_duplicate', 1);

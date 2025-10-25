@@ -15,7 +15,7 @@ Route::get('/clients/import', [ClientController::class, 'showImportForm'])->name
 Route::post('/clients/import', [ClientController::class, 'importCSV'])->name('clients.import.csv');
 
 // Duplicate clients
-Route::get('clients/duplicate-records', [ClientController::class, 'duplicateClients']);
+Route::get('clients/duplicate-records', [ClientController::class, 'duplicateClients'])->name('duplicate-clients');
 Route::patch('clients/duplicate-records/{clientId}', [ClientController::class, 'updateDuplicateClient'])->name('update.duplicate-clients');
 Route::delete('clients/duplicate-records/{clientId}', [ClientController::class, 'deleteDuplicateClient'])->name('delete.duplicate-clients');
 
