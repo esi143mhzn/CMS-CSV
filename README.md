@@ -90,26 +90,31 @@ Then visit to:
 ```bash
 http://localhost:8000
 ```
+**NOTE:** You will redirect to:
+```bash
+http://localhost:8000/clients
+```
 
 ## CSV Import/Export Workflow
 
-**Step 1**: Navigate to Client Import page via link below. 
+**Step 1**: After visiting http://localhost:8000, you will be automatically redirected to the **Clients** page:
 ```bash
-http://localhost:8000/import
+http://localhost:8000/clients
 ```
-**Step 2**: Upload your CSV file.
+**Step 2**: Use the **Import CSV** form on this page to upload your client data file.
 
-**Step 3**: Navigate to Duplicate Clients  via link below.
+**Step 3**: Once the import is complete, click the **Manage Duplicates** button to review duplicate records.
+You will be redirected to:
 ```bash
 http://localhost:8000/duplicate-records
 ```
-Here you can edit and delete duplicate records.
+Here you can **edit** and **delete** duplicate records.
 
-**Step 4**: Navigate to Client reports via link below.
+**Step 4**: Return to the Clients page to view the updated client list by clicking **Back to Clients** button.
 ```bash
-http://localhost:8000/Clients
+http://localhost:8000/clients
 ```
-**Step 5**: Export clients anytime via Export CSV with filter option.
+**Step 5**: Use the **Export CSV** option (with optional filters) to download client data anytime.
 
 ## Running Tests
 Make sure it points to a separate test database, for example cms_test.
