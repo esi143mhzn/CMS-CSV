@@ -36,7 +36,9 @@ class ClientController extends Controller
         }
             
         if($header !== $expectedHeaders) {
-            return back()->with('error', 'Invalid CSV header format.');
+            return response()->json([
+                'error' => 'Invalid CSV header format.'
+            ], 422);
         }
 
         // Load all existing client keys from DB
@@ -57,7 +59,7 @@ class ClientController extends Controller
             $validator = Validator::make($data, [
                 'company_name' => 'required|string|max:255',
                 'email' => 'required|email',
-                'phone_number' => 'nullable|string|max:20',
+                'phone_number' => 'required|string|max:20',
             ]);
 
             if($validator->fails()) {
@@ -95,15 +97,15 @@ class ClientController extends Controller
 
         fclose($file);
 
-        if(!empty($errors)) {
+        if(!empty($errors) || !empty($duplicates)) {
             return response()->json([
                 'error' => 'Some rows failed to import.',
                 'import_errors' => $errors,
                 'duplicates' => $duplicates,
-            ]);
+            ], 422);
         }
 
-        return response()->json(['message' => 'Imported successfully']);
+        return response()->json(['message' => 'Imported successfully'], 200);
     }
 
     public function duplicateClients() 
@@ -122,7 +124,9 @@ class ClientController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         $data = $request->only(['company_name', 'email', 'phone_number']);
@@ -130,7 +134,9 @@ class ClientController extends Controller
         $existingRecord = Client::find($id);
 
         if (!$existingRecord) {
-            return back()->with('error', 'Client not found!');
+            return response()->json([
+                'message' => 'Client not found!'
+            ], 404);
         }
 
         $change = [];
@@ -156,14 +162,22 @@ class ClientController extends Controller
         ]);
     }
 
-    public function deleteDuplicateClient($id) 
+    public function deleteDuplicateClient($id)
     {
-        Client::findOrFail($id)->delete();
+        $client = Client::find($id);
 
-        return response()->json('success', 'Duplicate client deleted successfuly.');
+        if (!$client) {
+            return response()->json(['message' => 'Client not found.'], 404);
+        }
+
+        $client->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Duplicate client deleted successfully.'
+        ], 200);
     }
 
-    
     public function exportCSV(Request $request)
     {
         $filter = $request->query('filter', 'all');
