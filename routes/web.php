@@ -11,7 +11,6 @@ Route::get('/', function () {
 Route::get('clients', [ClientController::class, 'listClients'])->name('list.clients');
 
 // Import client from CSV
-Route::get('/clients/import', [ClientController::class, 'showImportForm'])->name('clients.import.form');
 Route::post('/clients/import', [ClientController::class, 'importCSV'])->name('clients.import.csv');
 
 // Duplicate clients
