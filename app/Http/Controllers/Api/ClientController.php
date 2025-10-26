@@ -110,7 +110,7 @@ class ClientController extends Controller
 
     public function duplicateClients() 
     {
-        $duplicateClients = Client::where('is_duplicate', 1)->paginate(25);
+        $duplicateClients = Client::where('is_duplicate', 1)->orderBy('created_at', 'desc')->paginate(25);
 
         return response()->json($duplicateClients);
     }
@@ -149,15 +149,18 @@ class ClientController extends Controller
             }
         }
 
-        if (!empty($change)) {
-            $existingRecord->is_duplicate = 0;
+        if (empty($change)) {
+            return response()->json([
+                'message' => 'No data updates, so data remains the same.'
+            ]);
         }
-
+        
         $existingRecord->fill($data);
+        $existingRecord->is_duplicate = 0;
         $existingRecord->save();
 
         return response()->json([
-            'success' => 'Client updated successfully!',
+            'message' => 'Duplicate Client updated and moved to client list successfully!',
             'change' => $change,
         ]);
     }
