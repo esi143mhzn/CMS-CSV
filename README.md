@@ -11,6 +11,8 @@ Client management system that enables users to import client data from CSV files
 - **CSV Export:** Export filtered or full client lists to CSV.  
 - **Pagination & Filtering:** Easily navigate through large datasets.  
 - **Error Handling:** Prevents invalid or incomplete imports.
+- **Testing:** Unit and Feature tests to ensure data integrity and functionality.
+- **API Endpoints:** RESTful API for integration with error handling and validation responses.
 
 ## Tech Stack
 
@@ -19,6 +21,8 @@ Client management system that enables users to import client data from CSV files
 - **Language:** PHP 8.2+  
 - **Package Manager:** Composer  
 - **Frontend:** Blade, Bootstrap5
+- **Testing:** PHPUnit
+- **Version Control:** Git
 
 ## Prerequisites
 
@@ -62,7 +66,7 @@ DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=client_management
 DB_USERNAME=root
-DB_PASSWORD=
+DB_PASSWORD=yourpassword
 ```
 Generate the application key:
 ```bash
@@ -72,6 +76,10 @@ php artisan key:Generate
 ### Run Migration
 ```bash
 php artisan migrate
+```
+Seed sample client data:
+```bash
+php artisan db:seed --class=ClientSeeder
 ```
 
 ### Run the Application
@@ -121,6 +129,14 @@ php artisan migrate --env=testing
 ```bash
 php artisan test
 ```
+
+## API Documentation
+The system provides RESTful API endpoints for integration.
+
+You can import the Postman collection below to test APIs.
+
+### Postman Collection
+[Download API Collection](https://security-engineer-48926611-6395143.postman.co/workspace/Default-workspace~b6ee83de-d68f-4ec9-b227-5b054f69bcc8/collection/47036268-1aff1ebf-1a23-456c-b915-17e3f7331b16?action=share&source=copy-link&creator=47036268)
 
 ## License
 
