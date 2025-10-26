@@ -103,6 +103,25 @@ http://localhost:8000/Clients
 ```
 **Step 5**: Export clients anytime via Export CSV with filter option.
 
+## Running Tests
+Make sure it points to a separate test database, for example cms_test.
+
+### 1. Setup Test DB
+```bash
+CREATE DATABASE cms_test;
+cp .env .env.testing
+```
+
+### 2. Run Migrations
+```bash
+php artisan migrate --env=testing
+```
+
+### 3. Run All Tests
+```bash
+php artisan test
+```
+
 ## License
 
 This project is open-sourced under the MIT License.
