@@ -207,7 +207,7 @@ class ClientController extends Controller
 
     private function getFilteredClients($filter, $paginate = false)
     {
-        $filterQuery = Client::query();
+        $filterQuery = Client::query()->orderBy('updated_at', 'desc');
 
         if($filter === 'duplicates') {
             $filterQuery->where('is_duplicate', 1);
