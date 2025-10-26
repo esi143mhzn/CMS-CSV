@@ -102,7 +102,7 @@ class ClientController extends Controller
                 'error' => 'Some rows failed to import.',
                 'import_errors' => $errors,
                 'duplicates' => $duplicates,
-            ], 422);
+            ], 200);
         }
 
         return response()->json(['message' => 'Imported successfully'], 200);
