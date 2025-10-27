@@ -141,7 +141,7 @@ The system provides RESTful API endpoints for integration.
 You can import the Postman collection below to test APIs.
 
 ### Postman Collection
-[Download API Collection](https://security-engineer-48926611-6395143.postman.co/workspace/Default-workspace~b6ee83de-d68f-4ec9-b227-5b054f69bcc8/collection/47036268-1aff1ebf-1a23-456c-b915-17e3f7331b16?action=share&source=copy-link&creator=47036268)
+[Download API Collection](https://www.postman.com/security-engineer-48926611-6395143/workspace/client-management-system/collection/47036268-1aff1ebf-1a23-456c-b915-17e3f7331b16?action=share&creator=47036268)
 
 ## License
 
