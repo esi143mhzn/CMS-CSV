@@ -3,6 +3,9 @@
 
 Client management system that enables users to import client data from CSV files, automatically detect and highlight duplicate records, manage client information, and export data back to CSV format.
 
+## Live Demo
+**Hosted URL:**[https://pramishmaharjan.com.np/clients](https://pramishmaharjan.com.np/clients)
+
 ## Features
 
 - **CSV Import:** Upload client data directly from CSV files.  
