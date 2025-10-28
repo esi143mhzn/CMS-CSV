@@ -1,10 +1,10 @@
 
 # Client Management System
 
-Client management system that enables users to import client data from CSV files, automatically detect and highlight duplicate records, manage client information, and export data back to CSV format.
+A client management system that enables users to import client data from CSV files, automatically detect and highlight duplicate records, manage client information, and export data back to CSV format.
 
 ## Live Demo
-**Hosted URL:**[https://pramishmaharjan.com.np/clients](https://pramishmaharjan.com.np/clients)
+<a href="https://client-management-system.onrender.com" target="_blank">View Hosted Application</a> 
 
 ## Features
 
